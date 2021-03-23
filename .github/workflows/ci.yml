@@ -28,16 +28,9 @@ jobs:
         env:
             ASCIINEMA_KEY: ${{ secrets.ASCIINEMA_KEY }}
 
-      - name: Record
+      - name: Record & Upload
         run: |
           asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
           asciinema upload gh.cast
         env:
             TERM: xterm
-
-
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
-        with:
-          name: asciinema-cast
-          path: gh.cast

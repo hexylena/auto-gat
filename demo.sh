@@ -1,4 +1,5 @@
 #!/bin/bash
+pip config --user set global.progress_bar off
 . ./demo-magic/demo-magic.sh -n
 clear
 pe "pip install ansible"
