@@ -16,10 +16,20 @@ jobs:
           python-version: '3.9'
           architecture: 'x64'
 
+     - uses: actions/cache@v2
+       with:
+         path: ~/.cache/pip
+         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+         restore-keys: |
+           ${{ runner.os }}-pip-
+
       - name: Install
         run: |
           pip install asciinema
           pip install ansible
+
+      - name: Install
+        run: |
           sudo apt-get install pv
           git clone https://github.com/hexylena/git-gat/
 
