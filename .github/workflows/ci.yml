@@ -30,7 +30,8 @@ jobs:
 
       - name: Record
         run: |
-          asciinema rec gh.cast -c ./demo.sh
+          asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
+          asciinema upload gh.cast
         env:
             TERM: xterm
 
