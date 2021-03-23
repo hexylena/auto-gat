@@ -19,7 +19,9 @@ jobs:
       - name: Install
         run: |
           pip install asciinema
+          pip install ansible
           sudo apt-get install pv
+          git clone https://github.com/hexylena/git-gat/
 
       - name: Auth to asciinema
         run: |

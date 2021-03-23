@@ -9,19 +9,17 @@ pip config --user set global.progress_bar off
 clear
 
 # Install ansible (move to pre-setup?)
-pe "pip install ansible"
-# Clone git-gat
-git clone -q https://github.com/hexylena/git-gat/
 cd git-gat
 # Show what's there
-pe 'git status'
+pe "ls -al"
 
 # We'll loop over the commits in the repo, one by one
 for commit in $(git log --pretty=oneline | tac | head -n 4 | cut -f 1 -d' '); do
-	pe "git checkout $commit"
-	echo "Here's what changed"
-	pe "git show"
-	pe "ls -al"
+	git checkout $commit
+	echo "Next step: $(git show | head -n 5 |tail -n 1 | sed 's/[^:]*: //g')"
+	# echo "File changed: $(git show --name-only | tail -n 1)"
+	# Show the commit
+	git show --pretty | tail -n+9
 
 	# If the requirements file was changed, then we need to re-run ansible-galaxy install
 	reqs=$(git show --name-only | grep --quiet requirements.yml)
@@ -31,5 +29,8 @@ for commit in $(git log --pretty=oneline | tac | head -n 4 | cut -f 1 -d' '); do
 		pe "ansible-galaxy install -p roles -r requirements.yml"
 	fi
 
-	# TODO: ansible-playbook
+	if [[ -f galaxy.yml ]]; then
+		echo "Let's re-run the playbook"
+		pe "ansible-playbook galaxy.yml"
+	fi
 done
