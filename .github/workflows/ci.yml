@@ -23,6 +23,9 @@ jobs:
       - name: Record
         run: |
           asciinema rec gh.cast -c ./demo.sh
+        env:
+            TERM: xterm
+
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
