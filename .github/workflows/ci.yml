@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+          submodules: true
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
@@ -21,10 +22,10 @@ jobs:
 
       - name: Record
         run: |
-          asciinema rec out.cast -c ./demo.sh
+          asciinema rec gh.cast -c ./demo.sh
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
           name: asciinema-cast
-          path: out.cast
+          path: gh.cast
