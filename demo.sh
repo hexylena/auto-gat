@@ -14,7 +14,7 @@ cd git-gat
 pe "ls -al"
 
 # We'll loop over the commits in the repo, one by one
-for commit in $(git log --pretty=oneline | tac | head -n 4 | cut -f 1 -d' '); do
+for commit in $(git log --pretty=oneline | tac | head -n 10 | cut -f 1 -d' '); do
 	git checkout $commit
 	echo "Next step: $(git show | head -n 5 |tail -n 1 | sed 's/[^:]*: //g')"
 	# echo "File changed: $(git show --name-only | tail -n 1)"
