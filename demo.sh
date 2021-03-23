@@ -15,7 +15,7 @@ cd git-gat
 # We'll loop over the commits in the repo, one by one
 for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f 1 -d' '); do
 	git checkout -q $commit
-	echo "$(tput bold) Next step: $(git show | head -n 5 |tail -n 1 | sed 's/[^:]*: //g') $(tput sgr0)"
+	echo "$(tput bold)Next step: $(git show | head -n 5 |tail -n 1 | sed 's/[^:]*: //g') $(tput sgr0)"
 	sleep 2
 	echo "File changed: $(git show --name-only | tail -n 1)"
 	sleep 2
