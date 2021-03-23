@@ -34,7 +34,7 @@ for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f
 
 	if [[ -f galaxy.yml ]]; then
 		echo "Let's re-run the playbook"
-		pe "ansible-playbook galaxy.yml -u $(USER)"
+		pe "ansible-playbook galaxy.yml -u ${USER}"
 	fi
 	sleep 3
 done
