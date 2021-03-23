@@ -3,8 +3,8 @@ pip config --user set global.progress_bar off
 . ./demo-magic/demo-magic.sh -n
 clear
 pe "pip install ansible"
-pe "git clone https://github.com/hexylena/git-gat/"
-pe "cd git-gat"
+git clone -q https://github.com/hexylena/git-gat/
+cd git-gat
 pe 'git status'
 for commit in $(git log --pretty=oneline | tac | head -n 4 | cut -f 1 -d' '); do
 	pe "git checkout $commit"
