@@ -30,7 +30,7 @@ jobs:
 
       - name: Install
         run: |
-          sudo apt-get install pv
+          sudo apt-get install pv acl
           git clone https://github.com/hexylena/git-gat/
 
       - name: Auth to asciinema

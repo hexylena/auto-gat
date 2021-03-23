@@ -27,7 +27,7 @@ for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f
 	reqs=$(git show --name-only | grep --quiet requirements.yml)
 	ec=$?
 	if (( ec == 0 )); then
-		echo "The requirements have changed."
+		echo "The requirements have changed, we'll need to install the new ones."
 		pe "ansible-galaxy install -p roles -r requirements.yml"
 	fi
 	sleep 3
