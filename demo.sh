@@ -1,4 +1,5 @@
 #!/bin/bash
+export GIT_PAGER=cat
 pip config --user set global.progress_bar off
 . ./demo-magic/demo-magic.sh -n
 clear
