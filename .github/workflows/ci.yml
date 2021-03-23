@@ -19,6 +19,7 @@ jobs:
       - name: Install
         run: |
           pip install asciinema
+          sudo apt-get install pv
 
       - name: Record
         run: |
