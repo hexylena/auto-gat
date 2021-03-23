@@ -21,6 +21,13 @@ jobs:
           pip install asciinema
           sudo apt-get install pv
 
+      - name: Auth to asciinema
+        run: |
+            mkdir -p ~/.config/asciinema/
+            echo "${ASCIINEMA_KEY}" >> ~/.config/asciinema/install-id
+        env:
+            ASCIINEMA_KEY: ${{ secrets.ASCIINEMA_KEY }}
+
       - name: Record
         run: |
           asciinema rec gh.cast -c ./demo.sh
