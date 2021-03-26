@@ -32,7 +32,7 @@ jobs:
         run: |
           sudo apt-get install pv acl
           wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
-          tar xvfz https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
+          tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
           git clone https://github.com/hexylena/git-gat/
 
       - name: Auth to asciinema
