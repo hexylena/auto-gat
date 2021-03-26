@@ -31,6 +31,8 @@ jobs:
       - name: Install
         run: |
           sudo apt-get install pv acl
+          wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
+          tar xvfz https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
           git clone https://github.com/hexylena/git-gat/
 
       - name: Auth to asciinema
@@ -43,6 +45,7 @@ jobs:
       - name: Record & Upload
         run: |
           asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
-          asciinema upload gh.cast
+          ./asciinema-edit quantize --range 5 gh.cast > gh-short.cast
+          asciinema upload gh-short.cast
         env:
             TERM: xterm
