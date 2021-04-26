@@ -1,0 +1,26 @@
+{
+  "name": "automated-gat",
+  "version": "1.0.0",
+  "description": "**Premise**: We can record all of GAT automatically. Every terminal interaction, everything. Fully automated, so we can just relax on the beach while it records our workshop for us.",
+  "main": "playwright.js",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "inkjs": "^1.11.0",
+    "playwright": "^1.10.0",
+    "playwright-video": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hexylena/auto-gat.git"
+  },
+  "author": "Helena Rasche",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/hexylena/auto-gat/issues"
+  },
+  "homepage": "https://github.com/hexylena/auto-gat#readme"
+}
