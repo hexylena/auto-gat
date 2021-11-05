@@ -33,7 +33,6 @@ for thing in $(cat .scripts/10-ansible-galaxy-script.txt); do
 		# Checkout this commit
 		bash -c "$thing"
 		current_Commit=$(git show --format=%H | head -n 1)
-
 		echo "$(tput bold)Next step: $(git show --format="%s" | head -n 1 | sed 's/[^:]*: //g') $(tput sgr0)"
 		sleep 2
 
