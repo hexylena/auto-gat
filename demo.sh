@@ -1,6 +1,14 @@
 #!/bin/bash
 # Disable git's paging which can cause a hang
 export GIT_PAGER=cat
+export GALAXY_HOSTNAME="$(hostname -f)"
+export GALAXY_API_KEY=adminkey
+echo 'password' > ~/.vault-password.txt;
+echo '[galaxyservers]' > ~/.hosts
+echo "$(hostname -f) ansible_connection=local ansible_user=$(whoami)"  >> ~/.hosts
+echo '[pulsarservers]' >> ~/.hosts
+echo "$(hostname -f) ansible_connection=local ansible_user=$(whoami)"  >> ~/.hosts
+
 # Prevent pip from shouting everywhere
 pip config --user set global.progress_bar off
 # Setup the demo-magic
@@ -36,7 +44,7 @@ for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f
 	if [[ -f galaxy.yml ]]; then
 		echo "Let's re-run the playbook"
 		p "ansible-playbook galaxy.yml -u ${USER}"
-		ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}"
+		ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}" --vault-password-file ~/.vault-password.txt -i ~/.hosts
 	fi
 	sleep 3
 done
