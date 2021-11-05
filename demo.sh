@@ -11,10 +11,21 @@ export GIT_PAGER=cat
 export GALAXY_HOSTNAME="$(hostname -f)"
 export GALAXY_API_KEY=adminkey
 echo 'password' > ~/.vault-password.txt;
-echo '[galaxyservers]' > ~/.hosts
-echo "$(hostname -f) ansible_connection=local ansible_user=$(whoami)"  >> ~/.hosts
-echo '[pulsarservers]' >> ~/.hosts
-echo "$(hostname -f) ansible_connection=local ansible_user=$(whoami)"  >> ~/.hosts
+
+cat > ~/.hosts <<-EOF
+[galaxyservers]
+$(hostname -f) ansible_connection=local ansible_user=$(whoami)
+[pulsarservers]
+$(hostname -f) ansible_connection=local ansible_user=$(whoami)
+EOF
+
+cat > ~/.ansible.cfg <<-EOF
+[defaults]
+Interpreter_python = /usr/bin/python3
+iNventory = ~/.hosts
+retry_files_enabled = false
+vault_password_file = ~/.vault-password.txt
+EOF
 
 # Prevent pip from shouting everywhere
 pip config --user set global.progress_bar off
@@ -69,6 +80,7 @@ for thing in $(cat .scripts/10-ansible-galaxy-script.txt); do
 		if (( DRY_RUN == 1 )); then
 			echo ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}" --vault-password-file ~/.vault-password.txt -i ~/.hosts
 		else
+			export ANSIBLE_CONFIG=~/.ansible.cfg
 			ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}" --vault-password-file ~/.vault-password.txt -i ~/.hosts
 		fi
 	else
