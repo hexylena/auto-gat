@@ -11,6 +11,7 @@ clear
 # Install ansible (move to pre-setup?)
 cd git-gat
 # Show what's there
+ansible-galaxy install -p roles galaxyproject.self_signed_certs > /dev/null 2>/dev/null
 
 # We'll loop over the commits in the repo, one by one
 for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f 1 -d' '); do
@@ -35,7 +36,7 @@ for commit in $(git log --pretty=oneline | tac | head -n 10 | tail -n 9 | cut -f
 	if [[ -f galaxy.yml ]]; then
 		echo "Let's re-run the playbook"
 		p "ansible-playbook galaxy.yml -u ${USER}"
-		ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self-signed-certs openssl_domains={{ certbot_domains }}"
+		ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}"
 	fi
 	sleep 3
 done
