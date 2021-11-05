@@ -81,7 +81,7 @@ for thing in $(cat .scripts/10-ansible-galaxy-script.txt); do
 			echo ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }}" --vault-password-file ~/.vault-password.txt -i ~/.hosts
 		else
 			export ANSIBLE_CONFIG=~/.ansible.cfg
-			ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }} nginx_conf_ssl_certificate={{ openssl_certificate_path }} nginx_conf_ssl_certificate_key={{ openssl_private_key_path }}" --vault-password-file ~/.vault-password.txt -i ~/.hosts
+			ansible-playbook galaxy.yml -u ${USER} -e "nginx_ssl_role=galaxyproject.self_signed_certs openssl_domains={{ certbot_domains }} nginx_conf_ssl_certificate_key=/etc/ssl/private/{{ openssl_domains[0] }}.pem nginx_conf_ssl_certificate=/etc/ssl/certs/{{ openssl_domains[0] }}.crt" --vault-password-file ~/.vault-password.txt -i ~/.hosts
 		fi
 	else
 		echo "UNKNOWN $thing"
