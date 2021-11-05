@@ -39,6 +39,7 @@ jobs:
             ASCIINEMA_KEY: ${{ secrets.ASCIINEMA_KEY }}
 
       - name: Record & Upload
+        shell: 'script --return --quiet --command "bash {0}"'
         run: |
           stty cols 174 rows 45
           asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
