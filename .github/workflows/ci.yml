@@ -40,6 +40,7 @@ jobs:
 
       - name: Record & Upload
         run: |
+          stty cols 174 rows 45
           asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
           ./asciinema-edit quantize --range 5 gh.cast > gh-short.cast
           asciinema upload gh-short.cast
