@@ -23,13 +23,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install
+      - name: Install Dependencies
         run: |
           pip install asciinema
           pip install ansible
-
-      - name: Install
-        run: |
           sudo apt-get install pv acl
           wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
           tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
