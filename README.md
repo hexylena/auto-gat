@@ -11,7 +11,7 @@ See current recordings here: https://asciinema.org/~hexylena (there are some kno
 ## Galaxy Recordings
 
 ```
-sudo apt-get install libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libgtk-3-0 libpango-1.0-0 libcairo2 libgdk-pixbuf2.0-0 libasound2 libatspi2.0-0 libxshmfence1 libx11-xcb1 fonts-noto-color-emoji
+sudo apt-get install libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libgtk-3-0 libpango-1.0-0 libcairo2 libgdk-pixbuf2.0-0 libasound2 libatspi2.0-0 libxshmfence1 libx11-xcb1 fonts-noto-color-emoji fonts-dejavu ffmpeg pv
 ```
 
 For this we've come up with a pretty generic recording tool. It takes in a json file describing the steps, and returns a video and a json file with timestamps the actions occurred at to enable proper audio syncing.
