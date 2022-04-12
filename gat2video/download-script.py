@@ -14,7 +14,8 @@ if tutorial != 'cvmfs':
     print("unsupported")
     sys.exit(1)
 
-url = f'https://raw.githubusercontent.com/galaxyproject/training-material/main/topics/admin/tutorials/{tutorial}/tutorial.md'
+url = f'https://cdn.jsdelivr.net/gh/galaxyproject/training-material@main/topics/admin/tutorials/{tutorial}/tutorial.md'
+# url = f'https://raw.githubusercontent.com/galaxyproject/training-material/main/topics/admin/tutorials/{tutorial}/tutorial.md'
 response = urllib.request.urlopen(url).read().decode('utf-8').split('\n')
 lines = [x + '\n' for x in response]
 
