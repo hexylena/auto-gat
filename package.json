@@ -4,9 +4,11 @@
   "description": "**Premise**: We can record all of GAT automatically. Every terminal interaction, everything. Fully automated, so we can just relax on the beach while it records our workshop for us.",
   "main": "playwright.js",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "inkjs": "^1.11.0",
-    "playwright": "^1.10.0",
+    "editly": "^0.11.3",
+    "ffmpeg-static": "^5.0.0",
+    "playwright-chromium": "^1.20.2",
     "playwright-video": "^2.4.0"
   },
   "devDependencies": {},
