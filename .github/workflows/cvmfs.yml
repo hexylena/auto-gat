@@ -152,7 +152,8 @@ jobs:
       - name: Backup our files
         if: always()
         run: |
-          aws s3 sync "${GITHUB_WORKSPACE}" s3://galaxy-training/auto-gat/ --include '*.cast' --include '*.json' --include '*.mp4'
+          aws s3 sync "${GITHUB_WORKSPACE}"/scene* s3://galaxy-training/auto-gat/
+          aws s3 sync "${GITHUB_WORKSPACE}"/video* s3://galaxy-training/auto-gat/
 
       #- name: Archive asciinema recordings
         #if: always()
