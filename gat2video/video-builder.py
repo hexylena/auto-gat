@@ -13,7 +13,7 @@ G2V_CWD = os.getcwd()
 ANSIBLE_HOST_OVERRIDE = platform.node()
 GTN_URL = "https://training.galaxyproject.org/training-material"
 GXY_URL = f"https://{ANSIBLE_HOST_OVERRIDE}/"
-GIT_GAT = '/home/ubuntu/galaxy/'
+GIT_GAT = os.path.expanduser('~/galaxy')
 
 with open(sys.argv[1], 'r') as handle:
     data = json.load(handle)

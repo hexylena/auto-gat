@@ -7,6 +7,7 @@ import video_extract_script
 import urllib.request
 
 DIR = os.path.dirname(os.path.realpath(__file__))
+GIT_GAT = os.path.expanduser('~/galaxy')
 
 # Eventually support all
 SUPPORTED_TUTORIALS = ['ansible-galaxy', 'tus', 'singularity', 'tool-management', 'cvmfs', 'data-library', 'connect-to-compute-cluster', 'job-destinations', 'pulsar', 'gxadmin', 'monitoring', 'tiaas', 'reports', 'ftp']
@@ -31,20 +32,20 @@ with open(f'{tutorial}.script', 'w') as handle:
 # Checkout the right directory
 subprocess.check_call([
     'git', 'checkout', bounds[0]
-], cwd='/home/ubuntu/galaxy/')
+], cwd=GIT_GAT)
 # Install missing deps
 subprocess.check_call([
     'ansible-galaxy', 'install', '-r', 'requirements.yml', '-p', 'roles'
-], cwd='/home/ubuntu/galaxy/')
+], cwd=GIT_GAT)
 # And self signed certs
 subprocess.check_call([
     'ansible-galaxy', 'install', 'galaxyproject.self_signed_certs'
-], cwd='/home/ubuntu/galaxy/')
+], cwd=GIT_GAT)
 
 # Run playbook up to there.
 subprocess.check_call([
     'ansible-playbook', 'galaxy.yml', '-e', '@~/.extra.yml'
-], cwd='/home/ubuntu/galaxy/')
+], cwd=GIT_GAT)
 
 
 subprocess.check_call(['python3', os.path.join(DIR, 'video-builder.py'), f'{tutorial}.script', tutorial])
