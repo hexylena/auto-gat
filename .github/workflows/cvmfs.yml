@@ -35,14 +35,15 @@ jobs:
 
       - name: Install system dependencies
         run: |
-            sudo apt install -y pkg-config xvfb libx11-dev libxi-dev libxext-dev libglx-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev ffmpeg pv silversearcher-ag fonts-dejavu-core fonts-dejavu-extra curl acl
-
+            # System deps, mostly for video recording
+            sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra
+            # Playwright stuff
             npx -y playwright install-deps chromium
-
-          wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
-          tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
-
-          git clone https://github.com/hexylena/git-gat/ ~/galaxy/
+            # Asciinema
+            wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
+            tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
+            # git-gat
+            git clone https://github.com/hexylena/git-gat/ ~/galaxy/
       # END Dependencies
 
       - name: Auth to asciinema
