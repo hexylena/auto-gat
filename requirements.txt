@@ -1,3 +1,6 @@
 ansible
+marko
 asciinema
+pyyaml
 whatthepatch
+awscli
