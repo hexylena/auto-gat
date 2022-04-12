@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-chromium');
 const { saveVideo } = require('playwright-video');
 const fs = require('fs');
 var actions;
@@ -24,12 +24,16 @@ function logtime(now, start, msg){
 
 (async () => {
 	var start = new Date();
-	const browser = await chromium.launch();
+	// this seems to be ignored? no way to set zoom?
+	const browser = await chromium.launch({args: ["--force-device-scale-factor=1.5"]});
 	const context = await browser.newContext({ignoreHTTPSErrors: true});
 	const page = await context.newPage();
 	await page.setViewportSize({
 		width: 1920,
 		height: 1080,
+	});
+	await page.evaluate(() => {
+		document.body.style.zoom=1.4;
 	});
 	await saveVideo(page, video_output_name);
 
@@ -40,15 +44,30 @@ function logtime(now, start, msg){
 			await page.goto(step.target);
 			await page.waitForLoadState('networkidle');
 			now = new Date();
-			//logtime(now, start, {action: 'init'})
+			logtime(now, start, 'gone')
 		} else if (step.action == 'scrollTo'){
 			await page.evaluate((step) => document.getElementById(step.target.slice(1)).scrollIntoView({behavior: "smooth"}), step).catch((err) => console.log(err));
 			now = new Date();
-			logtime(now, start, {action: 'scroll', 'target': step.target})
-			await page.waitForTimeout(step.sleep * videoSpeed);
+			logtime(now, start, 'scrolled')
+		} else if (step.action == 'fill'){
+			await page.fill(step.target, step.value)
 			now = new Date();
+			logtime(now, start, 'filled')
+		} else if (step.action == 'click'){
+			await page.click(step.target)
+			now = new Date();
+			logtime(now, start, 'clicked')
+		} else if (step.action == 'waitForDataset'){
+			var e = document.evaluate(`//span[text()='${step.target}']`, document, null, XPathResult.ANY_TYPE, null).iterateNext().parentElement.parentElement.parentElement.id;
+			await this.page.waitForSelector(`#${e.id}.state-ok`);
+			now = new Date();
+			logtime(now, start, 'datasetState')
 		} else {
-			console.err("Unknown step type!", step)
+			console.log("Unknown step type!", step)
+		}
+
+		if(step.sleep){
+			await page.waitForTimeout(step.sleep * videoSpeed);
 		}
 	}
 	// Sleep an extra 1.5s at the end.

@@ -1,0 +1,9 @@
+marko
+asciinema
+pyyaml
+whatthepatch
+pyte
+pillow
+moviepy
+fclist-cffi
+freetype-py
