@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: |
             sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra  libx11-dev libxi-dev libxext-dev libglx-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+
+      - name: Install NodeJS dependencies
+        run: |
             npm i
             FFMPEG_PATH=$(echo "const ffmpeg = require('ffmpeg-static');console.log(ffmpeg.split('/').slice(0, -1).join('/'));" | node -)
             echo "Located FFMPEG at $FFMPEG_PATH"
@@ -41,16 +44,23 @@ jobs:
         run: |
             pip install -r requirements.txt
 
-      - name: Install other dependencies
+      - name: Install playwright dependencies
         run: |
             # System deps, mostly for video recording
             # Playwright stuff
             npx playwright install-deps chromium
+
+      - name: Install asciinema dependencies
+        run: |
             # Asciinema
             wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
             tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
+
+      - name: Provision git-gat
+        run: |
             # git-gat
             git clone https://github.com/hexylena/git-gat/ ~/galaxy/
+            echo 'password' > ~/galaxy/.vault-password.txt;
       # END Dependencies
 
       - name: Auth to asciinema
