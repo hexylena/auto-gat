@@ -3,7 +3,7 @@ name: Auto GAT CVMFS
 on: [push]
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -33,6 +33,9 @@ jobs:
         run: |
             sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra  libx11-dev libxi-dev libxext-dev libglx-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
             npm i
+            FFMPEG_PATH=$(echo "const ffmpeg = require('ffmpeg-static');console.log(ffmpeg.split('/').slice(0, -1).join('/'));" | node -)
+            echo "Located FFMPEG at $FFMPEG_PATH"
+            export PATH="$FFMPEG_PATH:$PATH"
 
       - name: Install python dependencies
         run: |
@@ -57,12 +60,63 @@ jobs:
         env:
             ASCIINEMA_KEY: ${{ secrets.ASCIINEMA_KEY }}
 
-      #- name: Record & Upload
-        #shell: 'script --return --quiet --command "bash {0}"'
-        #run: |
-          #stty cols 174 rows 35
+      - name: Setup AWS
+        run: |
+            mkdir -p ~/.aws/
+            cat > ~/.aws/config <<-EOF
+            [default]
+            region=us-east-1
+            EOF
+
+      - name: Setup Ansible
+        run: |
+            echo 'password' > ~/.vault-password.txt;
+
+            cat > ~/.extra.yml <<-EOF
+            nginx_ssl_role: galaxyproject.self_signed_certs
+            openssl_self_sign: true
+            openssl_domains: "{{ certbot_domains }}"
+
+            # These need to be re-defined for some reason?
+            openssl_certificate_path: "/etc/ssl/certs/{{ openssl_domains[0] }}.crt"
+            openssl_private_key_path: "/etc/ssl/private/{{ openssl_domains[0] }}.pem"
+
+            nginx_conf_ssl_certificate: "{{openssl_certificate_path}}"
+            nginx_conf_ssl_certificate_key: "{{ openssl_private_key_path }}"
+            EOF
+
+            cat > ~/.hosts <<-EOF
+            [galaxyservers]
+            $(hostname -f) ansible_connection=local ansible_user=$(whoami)
+            [pulsarservers]
+            $(hostname -f) ansible_connection=local ansible_user=$(whoami)
+            EOF
+
+            cat > ~/.ansible.cfg <<-EOF
+            [defaults]
+            interpreter_python = /usr/bin/python3
+            inventory = ~/.hosts
+            retry_files_enabled = false
+            vault_password_file = ~/.vault-password.txt
+            EOF
+
+
+      - name: Record & Upload
+        shell: 'script --return --quiet --command "bash {0}"'
+        run: |
+          stty cols 174 rows 35
+          python gat2video/gat2video.py cvmfs
+
+
           #asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
           #./asciinema-edit quantize --range 5 gh.cast > gh-short.cast
           #asciinema upload gh-short.cast
-        #env:
-            #TERM: xterm
+        env:
+            TERM: xterm
+
+      - name: Archive asciinema recordings
+        uses: actions/upload-artifact@v3
+        with:
+          name: asciinema
+          path: |
+            **/*.cast

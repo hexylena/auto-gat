@@ -9,6 +9,7 @@ import sys
 import platform
 
 G2V_HOME = os.path.dirname(os.path.realpath(__file__))
+G2V_CWD = os.getcwd()
 ANSIBLE_HOST_OVERRIDE = platform.node()
 GTN_URL = "https://training.galaxyproject.org/training-material"
 GXY_URL = f"https://{ANSIBLE_HOST_OVERRIDE}/"
@@ -323,14 +324,15 @@ def recordTerm(idx, group):
     # Convert to MP4
 
     # Ugly Hacks
-    shutil.copy(f"scene-{idx}.cast", '/a2m-data/1.cast')
+    # shutil.copy(f"scene-{idx}.cast", '/a2m-data/1.cast')
     # This will take a long time to render.
-    subprocess.check_call(['curl', 'http://a2mp4/'])
-    shutil.copy(f'/a2m-data/1/result.mp4', f'scene-{idx}.mp4')
-
-    # subprocess.check_call(
-        # ["python", "asciicast2movie/asciicast2movie.py", f"scene-{idx}.cast", f"scene-{idx}.mp4",]
-    # )
+    # subprocess.check_call(['curl', 'http://a2mp4/'])
+    # shutil.copy(f'/a2m-data/1/result.mp4', f'scene-{idx}.mp4')
+    subprocess.check_call([
+        'docker', 'run', '--rm', '-v', f'{G2V_CWD}:/data',
+        'beer5215/asciicast2mp4', f"scene-{idx}.cast"
+    ])
+    shutil.copy(f"scene-{idx}/result.mp4", f'scene-{idx}.mp4')
 
     resulting_script = []
     with open(f"scene-{idx}.log", "r") as handle:

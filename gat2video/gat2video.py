@@ -47,4 +47,4 @@ subprocess.check_call([
 ], cwd='/home/ubuntu/galaxy/')
 
 
-subprocess.check_call(['python3', 'video-builder.py', f'{tutorial}.script', tutorial])
+subprocess.check_call(['python3', os.path.join(DIR, 'video-builder.py'), f'{tutorial}.script', tutorial])
