@@ -28,6 +28,7 @@ jobs:
             vendor/bundle
             ~/.npm
           key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install dependencies
         run: |
             pip install -r requirements.txt
@@ -36,7 +37,7 @@ jobs:
       - name: Install system dependencies
         run: |
             # System deps, mostly for video recording
-            sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra
+            sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra  libx11-dev libxi-dev libxext-dev libglx-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
             # Playwright stuff
             npx playwright install-deps chromium
             # Asciinema
