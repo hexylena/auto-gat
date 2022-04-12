@@ -41,7 +41,7 @@ for step in steps:
 
         cmd = [
             "ruby",
-            "ari-synthesize.rb",
+            os.path.join(G2V_HOME, "ari-synthesize.rb"),
             "--aws",
             "-f",
             tmp.name,
