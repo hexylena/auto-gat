@@ -329,7 +329,7 @@ def recordTerm(idx, group):
     # subprocess.check_call(['curl', 'http://a2mp4/'])
     # shutil.copy(f'/a2m-data/1/result.mp4', f'scene-{idx}.mp4')
     subprocess.check_call([
-        'docker', 'run', '--rm', '-v', f'{G2V_CWD}:/data',
+        'docker', 'run', '--rm', '-v', f'{G2V_HOME}:/data',
         'beer5215/asciicast2mp4', f"scene-{idx}.cast"
     ])
     shutil.copy(f"scene-{idx}/result.mp4", f'scene-{idx}.mp4')
