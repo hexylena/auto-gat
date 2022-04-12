@@ -26,6 +26,7 @@ jobs:
         with:
           path: |
             vendor/bundle
+            ~/.cache/pip
             ~/.npm
           key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}-node-${{ hashFiles('**/package-lock.json') }}
 
