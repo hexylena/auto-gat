@@ -111,12 +111,25 @@ jobs:
             vault_password_file = ~/.vault-password.txt
             EOF
 
+      - name: Download script
+        run: |
+            python gat2video/download-script.py cvmfs
+
+      - name: Get Git-Gat up to speed
+        run: |
+            cd ~/galaxy/
+            git checkout $(python "$GITHUB_WORKSPACE"/gat2video/find-step.py cvmfs | head -n 1)
+            ansible-galaxy install -r requirements.yml -p roles
+            ansible-galaxy install galaxyproject.self_signed_certs
+            echo password > .vault-password.txt
+            ansible-playbook galaxy.yml -e @~/.extra.yml
 
       - name: Record & Upload
         shell: 'script --return --quiet --command "bash {0}"'
         run: |
           stty cols 174 rows 35
-          python gat2video/gat2video.py cvmfs
+          cd "$GITHUB_WORKSPACE"
+          python gat2video/video-builder.py cvmfs.script cvmfs
 
 
           #asciinema rec gh.cast -c ./demo.sh -t "Automated Github Recording $(date)"
