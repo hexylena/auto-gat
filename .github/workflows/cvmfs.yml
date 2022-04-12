@@ -117,6 +117,7 @@ jobs:
       - name: Download script
         run: |
             python gat2video/download-script.py cvmfs
+            cat cvmfs.script
 
       - name: Get Git-Gat up to speed
         run: |
