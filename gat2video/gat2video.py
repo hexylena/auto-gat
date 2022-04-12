@@ -42,6 +42,10 @@ subprocess.check_call([
     'ansible-galaxy', 'install', 'galaxyproject.self_signed_certs'
 ], cwd=GIT_GAT)
 
+# UGH
+with open('/home/runner/galaxy/.vault-password.txt', 'w') as handle:
+    handle.write('password\n')
+
 # Run playbook up to there.
 subprocess.check_call([
     'ansible-playbook', 'galaxy.yml', '-e', '@~/.extra.yml'
