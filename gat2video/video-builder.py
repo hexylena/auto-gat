@@ -316,7 +316,7 @@ def recordTerm(idx, group):
         "rec",
         cast_file,
         "-t",
-        f"Scene {idx}",
+        f"AUTO-GAT {TUTORIAL_ID} Scene {idx}",
         "-c",
         " ".join(innercmd),
     ]
