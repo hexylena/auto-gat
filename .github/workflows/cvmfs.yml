@@ -141,7 +141,7 @@ jobs:
       - name: Record & Upload
         shell: 'script --return --quiet --command "bash {0}"'
         run: |
-          stty cols 174 rows 35
+          stty cols 64 rows 16
           cd "$GITHUB_WORKSPACE"
           python gat2video/video-builder.py cvmfs.script cvmfs
 
