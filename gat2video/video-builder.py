@@ -342,7 +342,7 @@ def recordTerm(idx, group):
         'beer5215/asciicast2mp4', fn(f"scene-{idx}.cast")
     ])
     try:
-        print(subprocess.check_output(['tree']).decode('utf-8'))
+        print(subprocess.check_output(['tree', '-I', 'node_modules']).decode('utf-8'))
     except:
         pass
     shutil.copy(
