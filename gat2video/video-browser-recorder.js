@@ -19,7 +19,7 @@ function logtime(now, start, msg){
 		'time': timestamp,
 		'msg': msg,
 	})
-	console.log(timestamp/1000, msg);
+	//console.log(timestamp/1000, msg);
 }
 
 (async () => {
