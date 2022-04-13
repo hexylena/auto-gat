@@ -339,7 +339,7 @@ def recordTerm(idx, group):
     # shutil.copy(f'/a2m-data/1/result.mp4', f'scene-{idx}.mp4')
     subprocess.check_call([
         'docker', 'run', '--rm', '-v', f'{fn()}:/data',
-        'beer5215/asciicast2mp4', fn(f"scene-{idx}.cast")
+        'beer5215/asciicast2mp4', f"scene-{idx}.cast" # Not an fn() since it's internal to the container
     ])
     try:
         print(subprocess.check_output(['tree', '-I', 'node_modules']).decode('utf-8'))
