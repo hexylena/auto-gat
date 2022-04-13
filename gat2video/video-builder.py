@@ -181,6 +181,8 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     mux_cmd.append("-filter_complex")
 
     delayResults = list(calculateSyncing(syncpoints, group))
+    with open(videoout + '.sub-timing.json', 'w') as handle:
+        handle.write(json.dumps(delayResults))
 
     # The first audio sample must have a correct adelay for when that action happens.
     complex_filter = []
@@ -332,7 +334,7 @@ def recordTerm(idx, group):
         'docker', 'run', '--rm', '-v', f'{G2V_HOME}:/data',
         'beer5215/asciicast2mp4', f"scene-{idx}.cast"
     ])
-    shutil.copy(f"scene-{idx}/result.mp4", f'scene-{idx}.mp4')
+    shutil.copy(f"${G2V_HOME}/scene-{idx}/result.mp4", f'scene-{idx}.mp4')
 
     resulting_script = []
     with open(f"scene-{idx}.log", "r") as handle:
