@@ -14,6 +14,7 @@ ANSIBLE_HOST_OVERRIDE = platform.node()
 GTN_URL = "https://training.galaxyproject.org/training-material"
 GXY_URL = f"https://{ANSIBLE_HOST_OVERRIDE}/"
 GIT_GAT = os.path.expanduser('~/galaxy')
+HOME = os.path.dirname(G2V_HOME)
 
 with open(sys.argv[1], 'r') as handle:
     data = json.load(handle)
@@ -22,6 +23,11 @@ TUTORIAL_ID = sys.argv[2]
 
 meta = data["meta"]
 steps = data["steps"]
+
+
+def fn(*parts):
+    print(f"fn -> {os.path.join(HOME, *parts)}")
+    return os.path.join(HOME, *parts)
 
 # if os.path.exists(".step.cache.json"):
     # with open(".step.cache.json", "r") as handle:
@@ -203,15 +209,15 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
 
 def recordBrowser(idx):
     # Record our video. It'll start with a blank screen and page loading which we'll need to crop.
-    if os.path.exists(f"video-{idx}.mp4"):
+    if os.path.exists(fn(f"video-{idx}.mp4")):
         return
 
-    silent_video = f"video-{idx}-silent.mp4"
-    silent_video_cropped = f"video-{idx}-cropped.mp4"
+    silent_video = fn(f"video-{idx}-silent.mp4")
+    silent_video_cropped = fn(f"video-{idx}-cropped.mp4")
     cmd = [
         "node",
         os.path.join(G2V_HOME, "video-browser-recorder.js"),
-        f"scene-{idx}.json",
+        fn(f"scene-{idx}.json"),
         silent_video,
     ]
     print(" ".join(cmd))
@@ -235,7 +241,7 @@ def recordBrowser(idx):
     subprocess.check_call(cmd)
 
     # Build the video with sound.
-    muxAudioVideo(group, silent_video_cropped, f"video-{idx}.mp4", resulting_script[1:])
+    muxAudioVideo(group, silent_video_cropped, fn(f"video-{idx}.mp4"), resulting_script[1:])
 
 
 def recordGtn(idx, group):
@@ -246,7 +252,7 @@ def recordGtn(idx, group):
             {"action": "scrollTo", "target": g["data"]["target"], "sleep": g["mediameta"]["end"],}
         )
 
-    with open(f"scene-{idx}.json", "w") as handle:
+    with open(fn(f"scene-{idx}.json"), "w") as handle:
         json.dump(actions, handle)
 
     recordBrowser(idx)
@@ -266,14 +272,14 @@ def recordGxy(idx, group):
 
         actions.append(action)
 
-    with open(f"scene-{idx}.json", "w") as handle:
+    with open(fn(f"scene-{idx}.json"), "w") as handle:
         json.dump(actions, handle)
 
     recordBrowser(idx)
 
 
 def recordTerm(idx, group):
-    if os.path.exists(f"video-{idx}.mp4"):
+    if os.path.exists(fn(f"video-{idx}.mp4")):
         return
 
     actions = []
@@ -295,11 +301,11 @@ def recordTerm(idx, group):
                 print("????? SOMETHING IS WRONG")
             actions.append({"action": "cmd", "time": t, "data": cmd})
 
-    with open(f"{G2V_HOME}/scene-{idx}.json", "w") as handle:
+    with open(fn(f"scene-{idx}.json"), "w") as handle:
         json.dump(actions, handle)
 
     # Remove any previous versions of the cast.
-    cast_file = f"{G2V_HOME}/scene-{idx}.cast"
+    cast_file = fn(f"scene-{idx}.cast")
     if os.path.exists(cast_file):
         os.unlink(cast_file)
 
@@ -307,8 +313,8 @@ def recordTerm(idx, group):
     innercmd = [
         "bash",
         os.path.join(G2V_HOME, "video-term-recorder.sh"),
-        f"{G2V_HOME}/scene-{idx}.json",
-        f"{G2V_HOME}/scene-{idx}.log",
+        fn(f"scene-{idx}.json"),
+        fn(f"scene-{idx}.log"),
         ANSIBLE_HOST_OVERRIDE,
         GIT_GAT,
     ]
@@ -332,17 +338,20 @@ def recordTerm(idx, group):
     # subprocess.check_call(['curl', 'http://a2mp4/'])
     # shutil.copy(f'/a2m-data/1/result.mp4', f'scene-{idx}.mp4')
     subprocess.check_call([
-        'docker', 'run', '--rm', '-v', f'{G2V_HOME}:/data',
-        'beer5215/asciicast2mp4', f"scene-{idx}.cast"
+        'docker', 'run', '--rm', '-v', f'{fn()}:/data',
+        'beer5215/asciicast2mp4', fn(f"scene-{idx}.cast")
     ])
     try:
         print(subprocess.check_output(['tree']).decode('utf-8'))
     except:
         pass
-    shutil.copy(f"{G2V_HOME}/scene-{idx}/result.mp4", f'scene-{idx}.mp4')
+    shutil.copy(
+        fn(f"scene-{idx}", "result.mp4"),
+        fn(f'scene-{idx}.mp4')
+    )
 
     resulting_script = []
-    with open(f"scene-{idx}.log", "r") as handle:
+    with open(fn(f"scene-{idx}.log"), "r") as handle:
         for line in handle.readlines():
             line = line.strip().split("\t")
             resulting_script.append(
@@ -350,7 +359,7 @@ def recordTerm(idx, group):
             )
 
     # Mux with audio
-    muxAudioVideo(group, f"scene-{idx}.mp4", f"video-{idx}.mp4", resulting_script)
+    muxAudioVideo(group, fn(f"scene-{idx}.mp4"), fn(f"video-{idx}.mp4"), resulting_script)
 
 # Next pass, we'll aggregate things of the same 'type'. This will make
 # recording videos easier because we can more smoothly tween between steps.
