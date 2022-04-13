@@ -97,6 +97,11 @@ jobs:
 
             nginx_conf_ssl_certificate: "{{openssl_certificate_path}}"
             nginx_conf_ssl_certificate_key: "{{ openssl_private_key_path }}"
+
+            # Using hash-merge it should work?
+            galaxy_config:
+              galaxy:
+                master_api_key: adminkey
             EOF
 
             cat > ~/.hosts <<-EOF
@@ -126,7 +131,11 @@ jobs:
             ansible-galaxy install -r requirements.yml -p roles
             ansible-galaxy install galaxyproject.self_signed_certs
             echo password > .vault-password.txt
-            ansible-playbook galaxy.yml -e @~/.extra.yml
+            ANSIBLE_HASH_BEHAVIOUR=merge ansible-playbook galaxy.yml -e @~/.extra.yml
+            pip install ephemeris
+            export CURL_CA_BUNDLE=""
+            shed-tools install -g https://$(hostname -f) -a adminkey --name bwa --owner devteam --section_label Mapping
+
 
       - name: Record & Upload
         shell: 'script --return --quiet --command "bash {0}"'
