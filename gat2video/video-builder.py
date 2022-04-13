@@ -350,7 +350,7 @@ def recordTerm(idx, group):
         '-S', '4', # 4x pixel density
         '-w', '64', # 64 characters wide
         '-h', '16', # 16 high
-        '-t', 'monokai',
+        '-t', 'solarized-light', # Literally the only working theme.
         f"scene-{idx}.cast" # Not an fn() since it's internal to the container
     ])
     try:
