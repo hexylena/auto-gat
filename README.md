@@ -1,5 +1,7 @@
 # Fully Automated Luxury GAT Screen Capture
 
+![cover image in synthwave style popular with this meme](./image/cover.png)
+
 **Premise**: We can record all of GAT automatically. Every terminal interaction, everything. Fully automated, so we can just relax on the beach while it records our workshop for us.
 
 ## Terminal Recordings
@@ -60,8 +62,7 @@ We've developed a GitHub Action workflow which builds the entire training. It ro
       ```json
       {
         "type": ["code", "spoken"],
-        "code": "--- a/requirements.yml\n+++ b/requirements.yml\n@@ -18,3 +18,5 @@\n  version: 048c4f178077d05c1e67ae8d9893809aac9ab3b7\n- src: gantsign.golang\n  version: 2.6.
-3\n+++- src: galaxyproject.cvmfs\n+  version: 0.2.13",
+        "code": "--- a/requirements.yml\n+++ b/requirements.yml\n@@ -18,3 +18,5 @@....",
         "data": {
           "commit": "Add requirement",
           "visual": "terminal"
@@ -122,5 +123,10 @@ And this again is recorded as a "script", similar to the above JSON log from the
 
 (todo) all of the associated scenes are merged into a final video using [`editly`](https://github.com/mifi/editly)
 
+## Cover
 
+Thanks [redheadsoldier](https://www.deviantart.com/redheadsoldier/art/Nature-Neon-601893009) for the background image.
 
+## License
+
+AGPL-3.0
