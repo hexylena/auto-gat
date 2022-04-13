@@ -58,7 +58,7 @@ for line in $(cat $SCRIPT | jq '.[]' -c); do
 		echo 'password' > ${GIT_GAT}/.vault-password.txt
 		if [[ "$data" == "ansible-playbook"* ]]; then
 			p "$data"
-			$data -e @~/.extra.yml
+			bash -c "$data -e @~/.extra.yml"
 		else
 			pe "$data"
 		fi

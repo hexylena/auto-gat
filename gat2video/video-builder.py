@@ -322,6 +322,7 @@ def recordTerm(idx, group):
         "asciinema",
         "rec",
         cast_file,
+        # "-i", "10", # Limit pauses to no more than 10 seconds.
         "-t",
         f"AUTO-GAT {TUTORIAL_ID} Scene {idx}",
         "-c",
