@@ -77,9 +77,11 @@ results = results.map{|item|
   }
 }.flatten
 
+output = File.open(ARGV[1], 'w')
 results.each_with_index{|x, idx|
-  puts "#{idx + 1}"
-  puts "#{timefmt(x['start'], 'srt')} --> #{timefmt(x['end'], 'srt')}"
-  puts "#{x['text']}"
-  puts ""
+  output.write("#{idx + 1}\n")
+  output.write("#{timefmt(x['start'], 'srt')} --> #{timefmt(x['end'], 'srt')}\n")
+  output.write("#{x['text']}\n")
+  output.write("\n")
 }
+output.close

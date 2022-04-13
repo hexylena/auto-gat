@@ -190,6 +190,12 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     with open(videoout + '.sub-timing.json', 'w') as handle:
         handle.write(json.dumps(delayResults))
 
+    subprocess.call([
+        'ruby', f'{G2V_HOME}/generate-subs.rb',
+        videoout + '.sub-timing.json',
+        videoout.replace('.mp4', '.en.srt')
+    ])
+
     # The first audio sample must have a correct adelay for when that action happens.
     complex_filter = []
     concat_filter = ""
