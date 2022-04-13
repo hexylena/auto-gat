@@ -334,6 +334,10 @@ def recordTerm(idx, group):
         'docker', 'run', '--rm', '-v', f'{G2V_HOME}:/data',
         'beer5215/asciicast2mp4', f"scene-{idx}.cast"
     ])
+    try:
+        print(subprocess.check_output(['tree']).decode('utf-8'))
+    except:
+        pass
     shutil.copy(f"${G2V_HOME}/scene-{idx}/result.mp4", f'scene-{idx}.mp4')
 
     resulting_script = []
