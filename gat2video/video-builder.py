@@ -294,7 +294,8 @@ def recordTerm(idx, group):
             else:
                 print("????? SOMETHING IS WRONG")
             actions.append({"action": "cmd", "time": t, "data": cmd})
-    with open(f"scene-{idx}.json", "w") as handle:
+
+    with open(f"{G2V_HOME}/scene-{idx}.json", "w") as handle:
         json.dump(actions, handle)
 
     # Remove any previous versions of the cast.
@@ -338,7 +339,7 @@ def recordTerm(idx, group):
         print(subprocess.check_output(['tree']).decode('utf-8'))
     except:
         pass
-    shutil.copy(f"${G2V_HOME}/scene-{idx}/result.mp4", f'scene-{idx}.mp4')
+    shutil.copy(f"{G2V_HOME}/scene-{idx}/result.mp4", f'scene-{idx}.mp4')
 
     resulting_script = []
     with open(f"scene-{idx}.log", "r") as handle:
