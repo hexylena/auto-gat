@@ -44,7 +44,7 @@ function logtime(now, start, msg){
 			});
 			await page.waitForLoadState('networkidle');
 			if(step.value !== undefined){
-				console.log('text=' + step.value)
+				//console.log('text=' + step.value)
 				await page.locator('text=' + step.value).first().waitFor();
 			}
 			now = new Date();
