@@ -25,15 +25,12 @@ function logtime(now, start, msg){
 (async () => {
 	var start = new Date();
 	// this seems to be ignored? no way to set zoom?
-	const browser = await chromium.launch({args: ["--force-device-scale-factor=1.5"]});
+	const browser = await chromium.launch();
 	const context = await browser.newContext({ignoreHTTPSErrors: true});
 	const page = await context.newPage();
 	await page.setViewportSize({
 		width: 1920,
 		height: 1080,
-	});
-	await page.evaluate(() => {
-		document.body.style.zoom=1.4;
 	});
 	await saveVideo(page, video_output_name);
 
@@ -42,9 +39,13 @@ function logtime(now, start, msg){
 		//console.log(step);
 		if(step.action == 'goto'){
 			await page.goto(step.target);
+			await page.evaluate(() => {
+				document.body.style.zoom=1.4;
+			});
 			await page.waitForLoadState('networkidle');
 			if(step.value !== undefined){
-				await page.locator('text=' + step.value).waitFor();
+				console.log('text=' + step.value)
+				await page.locator('text=' + step.value).first().waitFor();
 			}
 			now = new Date();
 			logtime(now, start, 'gone')
@@ -53,16 +54,44 @@ function logtime(now, start, msg){
 			now = new Date();
 			logtime(now, start, 'scrolled')
 		} else if (step.action == 'fill'){
-			await page.fill(step.target, step.value)
+			//await page.fill(step.target, step.value)
+
+		  await page.locator(step.target).first().fill(step.value);
+
 			now = new Date();
 			logtime(now, start, 'filled')
 		} else if (step.action == 'click'){
-			await page.click(step.target)
+			//await page.locator(step.target).first().click();
+			//await page.click(step.target)
+			await page.evaluate((step) => {
+				document.querySelector(step.target).click();
+			}, step);
+
+			await page.evaluate(() => {
+				document.body.style.zoom=1.4;
+			});
 			now = new Date();
 			logtime(now, start, 'clicked')
-		} else if (step.action == 'custom'){
+		} else if (step.action == 'loadTool'){
+			await page.evaluate((step) => {
+				Galaxy.router.push("/", { tool_id: step.target });
+			}, step);
 			await page.evaluate(() => {
+				document.body.style.zoom=1.4;
+			});
+
+			if(step.value !== undefined){
+				await page.locator('text=' + step.value).first().waitFor();
+			}
+
+			now = new Date();
+			logtime(now, start, 'loadTool')
+		} else if (step.action == 'custom'){
+			await page.evaluate((step) => {
 				eval(step.target)
+			}, step);
+			await page.evaluate(() => {
+				document.body.style.zoom=1.4;
 			});
 
 			now = new Date();

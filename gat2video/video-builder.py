@@ -16,6 +16,13 @@ GXY_URL = f"https://{ANSIBLE_HOST_OVERRIDE}/"
 GIT_GAT = os.path.expanduser('~/galaxy')
 HOME = os.path.dirname(G2V_HOME)
 
+
+import argparse
+parser = argparse.ArgumentParser(description='Process')
+parser.add_argument('script', type=argparse.FileType('r'), help='E.g. cvmfs.script')
+parser.add_argument('tutorial_id', type=str, help='E.g. cvmfs (yes the same as the script filename usually.)')
+args = parser.parse_args()
+
 with open(sys.argv[1], 'r') as handle:
     data = json.load(handle)
 
