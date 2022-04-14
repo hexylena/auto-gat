@@ -12,11 +12,22 @@ import sys
 import knittingneedles as knit
 
 
+replacements = {
+    '%%sq%%': "'",
+    '%%dq%%': '"',
+    '%%sp%%': ' ',
+}
+
+
 def dataKv(line):
     for m in re.findall('(?P<k>data-[a-z-]*)="(?P<v>[^"]*)"', line):
-        yield (m[0][5:], m[1].strip('"'))
+        text = m[1].strip('"')
+        for k, v in replacements.items():
+            text = text.replace(k, v)
+        yield (m[0][5:], text)
 
 def fixspoken(kids):
+    print(kids)
     text = ""
     for y in kids:
         if y['element'] != 'paragraph':

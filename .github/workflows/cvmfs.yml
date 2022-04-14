@@ -122,7 +122,7 @@ jobs:
 
       - name: Download script
         run: |
-            python gat2video/download-script.py cvmfs
+            python gat2video/download-script.py cvmfs --branch video-final
             cat cvmfs.script
 
       - name: Get Git-Gat up to speed
