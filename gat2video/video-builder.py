@@ -203,13 +203,6 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
         videoout.replace('.mp4', '.timing-bad.srt')
     ])
 
-    # Sync up subtitles the lazy way
-    subprocess.check_call([
-        'ffs', videoout,
-        '-i', videoout.replace('.mp4', '.timing-bad.srt'),
-        '-o', videoout.replace('.mp4', '.en.srt')
-    ])
-
     # The first audio sample must have a correct adelay for when that action happens.
     complex_filter = []
     concat_filter = ""
@@ -225,6 +218,13 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     mux_cmd.extend([final_complex, "-map", "0:v", "-map", "[a]", videoout])
     print(" ".join(mux_cmd))
     subprocess.check_call(mux_cmd)
+
+    # Sync up subtitles the lazy way
+    subprocess.check_call([
+        'ffs', videoout,
+        '-i', videoout.replace('.mp4', '.timing-bad.srt'),
+        '-o', videoout.replace('.mp4', '.en.srt')
+    ])
 
 
 def recordBrowser(idx):
