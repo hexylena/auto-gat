@@ -206,8 +206,8 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     # Sync up subtitles the lazy way
     subprocess.check_call([
         'ffs', videoout,
-        videoout.replace('.mp4', '.timing-bad.srt'),
-        videoout.replace('.mp4', '.en.srt')
+        '-i', videoout.replace('.mp4', '.timing-bad.srt'),
+        '-o', videoout.replace('.mp4', '.en.srt')
     ])
 
     # The first audio sample must have a correct adelay for when that action happens.
@@ -391,6 +391,20 @@ def recordTerm(idx, group):
 # recording videos easier because we can more smoothly tween between steps.
 # E.g. scrolling in GTN + waiting.  Or recording N things in the terminal and
 # the audios for those.
+editly = {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "fast": False,
+    "outPath": "final.mp4",
+    "defaults": {
+        "transition": {
+            "duration": 0
+        }
+    },
+    "keepSourceAudio": True,
+    "clips": [],
+}
 for idx, group in enumerate(runningGroup(steps)):
     typ = group[0]["data"]["visual"]
     print(f"typ={typ} len={len(group)} idx={idx} group={group}")
@@ -400,3 +414,18 @@ for idx, group in enumerate(runningGroup(steps)):
         recordTerm(idx, group)
     elif typ == "galaxy":
         recordGxy(idx, group)
+
+    editly['clips'].append({
+        "layers": [
+            {
+                "type": "video",
+                "path": fn(f"video-{idx}.mp4"),
+                "resizeMode": "contain",
+                "zoomDirection": None,
+                "mixVolume": 1,
+            },
+        ]
+    })
+
+with open(fn('editly.json'), 'w') as handle:
+    handle.write(json.dumps(editly, indent=2))
