@@ -4,3 +4,4 @@ asciinema
 pyyaml
 whatthepatch
 awscli
+ffsubsync

@@ -56,7 +56,7 @@ def split_sentence(sentence, timing)
         ])
     else
         results.push([
-          split_sentence[o..o + part_off].join(' '),
+          split_sentence[o..o + part_off - 1].join(' '),
           tacc,
           tacc + timing / parts
         ])
