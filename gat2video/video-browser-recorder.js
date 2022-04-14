@@ -43,6 +43,9 @@ function logtime(now, start, msg){
 		if(step.action == 'goto'){
 			await page.goto(step.target);
 			await page.waitForLoadState('networkidle');
+			if(step.value !== undefined){
+				await page.locator('text=' + step.value).waitFor();
+			}
 			now = new Date();
 			logtime(now, start, 'gone')
 		} else if (step.action == 'scrollTo'){
@@ -57,6 +60,13 @@ function logtime(now, start, msg){
 			await page.click(step.target)
 			now = new Date();
 			logtime(now, start, 'clicked')
+		} else if (step.action == 'custom'){
+			await page.evaluate(() => {
+				eval(step.target)
+			});
+
+			now = new Date();
+			logtime(now, start, 'custom')
 		} else if (step.action == 'waitForDataset'){
 			var e = document.evaluate(`//span[text()='${step.target}']`, document, null, XPathResult.ANY_TYPE, null).iterateNext().parentElement.parentElement.parentElement.id;
 			await this.page.waitForSelector(`#${e.id}.state-ok`);
