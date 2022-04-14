@@ -190,14 +190,14 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     with open(videoout + '.sub-timing.json', 'w') as handle:
         handle.write(json.dumps(delayResults))
 
-    subprocess.call([
+    subprocess.check_call([
         'ruby', f'{G2V_HOME}/generate-subs.rb',
         videoout + '.sub-timing.json',
         videoout.replace('.mp4', '.timing-bad.srt')
     ])
 
     # Sync up subtitles the lazy way
-    subprocess.call([
+    subprocess.check_call([
         'ffs', videoout,
         videoout.replace('.mp4', '.timing-bad.srt'),
         videoout.replace('.mp4', '.en.srt')
