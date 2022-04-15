@@ -168,7 +168,7 @@ jobs:
 
       - name: Generate final video
         run: |
-            editly editly.json --fast
+            $(npm bin)/editly editly.json --fast
 
       - name: Backup our files
         if: always()
