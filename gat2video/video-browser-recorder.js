@@ -32,7 +32,9 @@ function logtime(now, start, msg){
 		width: 1920,
 		height: 1080,
 	});
-	await saveVideo(page, video_output_name);
+	if(video_output_name !== undefined){
+		await saveVideo(page, video_output_name);
+	}
 
 	for(var i = 0; i < actions.length; i++){
 		var step = actions[i];
