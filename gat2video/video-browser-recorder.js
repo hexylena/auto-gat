@@ -45,7 +45,7 @@ function logtime(now, start, msg){
 			await page.waitForLoadState('networkidle');
 			if(step.value !== undefined){
 				//console.log('text=' + step.value)
-				await page.locator('text=' + step.value).first().waitFor();
+				await page.locator(step.value).first().waitFor();
 			}
 			now = new Date();
 			logtime(now, start, 'gone')
@@ -81,7 +81,7 @@ function logtime(now, start, msg){
 			});
 
 			if(step.value !== undefined){
-				await page.locator('text=' + step.value).first().waitFor();
+				await page.locator(step.value).waitFor();
 			}
 
 			now = new Date();
