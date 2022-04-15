@@ -279,7 +279,7 @@ def recordGtn(idx, group):
 
 
 def recordGxy(idx, group):
-    actions = [{"action": "goto", "target": GXY_URL,}]
+    actions = [{"action": "goto", "target": GXY_URL, "value": "#right >> text=History"}]
     for g in group:
         action = {
             "action": g["data"]["action"],
