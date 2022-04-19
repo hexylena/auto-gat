@@ -232,7 +232,7 @@ def recordBrowser(idx):
     if os.path.exists(fn(f"video-{idx}.mp4")):
         return
 
-    silent_video = fn(f"video-{idx}-silent.mp4")
+    silent_video = fn(f"video-{idx}-silent.webm")
     silent_video_cropped = fn(f"video-{idx}-cropped.mp4")
     cmd = [
         "node",
@@ -256,8 +256,6 @@ def recordBrowser(idx):
         f"{adelay}ms",
         "-i",
         silent_video,
-        "-c",
-        "copy",
         silent_video_cropped,
     ]
     print(" ".join(cmd))
