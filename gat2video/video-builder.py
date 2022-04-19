@@ -238,6 +238,7 @@ def recordBrowser(idx):
         "node",
         os.path.join(G2V_HOME, "video-browser-recorder.js"),
         fn(f"scene-{idx}.json"),
+        "--mp4",
         silent_video,
     ]
     print(" ".join(cmd))

@@ -1,5 +1,4 @@
 const { chromium } = require('playwright-chromium');
-const { saveVideo } = require('playwright-video');
 const { program } = require('commander');
 
 const fs = require('fs');
@@ -23,10 +22,6 @@ fs.readFile(program.args[0], 'utf8', (err, data) => {
 	actions = JSON.parse(data);
 });
 
-if(options.mp4){
-	var video_output_name = options.mp4;
-}
-
 var videoSpeed = 1000;
 if(options.fast){
 	videoSpeed = 10;
@@ -45,15 +40,22 @@ function logtime(now, start, msg){
 	var start = new Date();
 	// this seems to be ignored? no way to set zoom?
 	const browser = await chromium.launch();
-	const context = await browser.newContext({ignoreHTTPSErrors: true});
+	var contextOptions = {
+		ignoreHTTPSErrors: true
+	}
+	if(options.mp4){
+		contextOptions['recordVideo'] = {
+			dir: '/tmp/',
+			size: { width: 1920, height: 1080 },
+		}
+	}
+	const context = await browser.newContext(contextOptions);
+
 	const page = await context.newPage();
 	await page.setViewportSize({
 		width: 1920,
 		height: 1080,
 	});
-	if(options.mp4){
-		await saveVideo(page, video_output_name);
-	}
 
 	for(var i = 0; i < actions.length; i++){
 		var step = actions[i];
@@ -134,4 +136,13 @@ function logtime(now, start, msg){
 	await page.waitForTimeout(1500);
 	await browser.close();
 	process.stdout.write(JSON.stringify(syncReport));
+
+	// Make sure to await close, so that videos are saved.
+	await context.close();
+
+	if(options.mp4){
+		const path = await page.video().path();
+		fs.rename(path, options.mp4, () => {});
+	}
+
 })();
