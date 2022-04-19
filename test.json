@@ -1,0 +1,37 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "fast": false,
+  "outPath": "final.mp4",
+  "defaults": {
+    "transition": {
+      "duration": 0
+    }
+  },
+  "keepSourceAudio": true,
+  "clips": [
+    {
+      "layers": [
+        {
+          "type": "video",
+          "path": "output/video-0.mp4",
+          "resizeMode": "contain",
+          "zoomDirection": null,
+          "mixVolume": 1
+        }
+      ]
+    },
+    {
+      "layers": [
+        {
+          "type": "video",
+          "path": "output/video-1.mp4",
+          "resizeMode": "contain",
+          "zoomDirection": null,
+          "mixVolume": 1
+        }
+      ]
+    }
+  ]
+}
