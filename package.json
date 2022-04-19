@@ -5,9 +5,10 @@
   "main": "playwright.js",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "inkjs": "^1.11.0",
+    "commander": "^9.2.0",
     "editly": "^0.11.3",
     "ffmpeg-static": "^5.0.0",
+    "inkjs": "^1.11.0",
     "playwright-chromium": "^1.20.2",
     "playwright-video": "^2.4.0"
   },

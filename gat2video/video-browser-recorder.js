@@ -1,17 +1,36 @@
 const { chromium } = require('playwright-chromium');
 const { saveVideo } = require('playwright-video');
+const { program } = require('commander');
+
 const fs = require('fs');
 var actions;
 var syncReport = [];
-fs.readFile(process.argv[2], 'utf8', (err, data) => {
+
+program
+  .name('video-browser-recorder')
+  .description('Given a GTN JSON Script, trigger specific browser recording actions with a simplified syntax')
+  .version('0.0.0');
+
+program
+  .argument('<jsonpath>', 'Path to the JSON script')
+  .option('--fast')
+  .option('--mp4 <output-mp4-path>');
+
+program.parse(process.argv);
+const options = program.opts();
+
+fs.readFile(program.args[0], 'utf8', (err, data) => {
 	actions = JSON.parse(data);
 });
-var video_output_name = process.argv[3];
-var videoSpeed = 1000;
-if(process.argv.length > 4){
-	videoSpeed = 10;
+
+if(options.mp4){
+	var video_output_name = options.mp4;
 }
 
+var videoSpeed = 1000;
+if(options.fast){
+	videoSpeed = 10;
+}
 
 function logtime(now, start, msg){
 	var timestamp = now.getTime() - start.getTime();
@@ -32,7 +51,7 @@ function logtime(now, start, msg){
 		width: 1920,
 		height: 1080,
 	});
-	if(video_output_name !== undefined){
+	if(options.mp4){
 		await saveVideo(page, video_output_name);
 	}
 
