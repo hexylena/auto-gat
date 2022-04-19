@@ -180,7 +180,7 @@ jobs:
             tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
 
             # Merge all of them using our amazingly sub-optimal script
-            python gat2video/asciinema-cat.py output/*cast --title "GAT/CVMFS Command Line: Auto-GAT $(date '+%Y %B %d')"> final.cast
+            python gat2video/asciinema-cat.py scene*cast --title "GAT/CVMFS Command Line: Auto-GAT $(date '+%Y %B %d')"> final.cast
 
             # Then quantize that to remove long pauses
             ./asciinema-edit quantize --range 5 scene-final.cast > scene-final-quant.cast
