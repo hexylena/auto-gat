@@ -1,6 +1,9 @@
 name: Auto GAT CVMFS
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -51,12 +54,6 @@ jobs:
             # System deps, mostly for video recording
             # Playwright stuff
             npx playwright install-deps chromium
-
-      - name: Install asciinema dependencies
-        run: |
-            # Asciinema
-            wget https://github.com/cirocosta/asciinema-edit/releases/download/0.0.6/asciinema-edit_0.0.6_linux_amd64.tar.gz
-            tar xvfz asciinema-edit_0.0.6_linux_amd64.tar.gz
 
       - name: Provision git-gat
         run: |

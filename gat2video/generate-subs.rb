@@ -38,7 +38,7 @@ def split_sentence(sentence, timing)
   split_sentence = sentence.split(' ')
   spaces = sentence.count(" ")
 
-  parts = 1 + (spaces / 20)
+  parts = 1 + (spaces / 12)
   part_off = spaces / parts
 
   o = 0
@@ -48,7 +48,7 @@ def split_sentence(sentence, timing)
   results = []
 
   range.each{|i|
-    if i == parts - 1
+    if i == parts
         results.push([
           split_sentence[o..-1].join(' '),
           tacc,
