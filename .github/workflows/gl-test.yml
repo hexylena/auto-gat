@@ -1,0 +1,62 @@
+name: editly-GL Test
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      # BEGIN Dependencies
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+          architecture: 'x64'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            vendor/bundle
+            node_modules
+            ~/.cache/pip
+            ~/.npm
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: |
+            sudo apt install -y ffmpeg pv fonts-dejavu-core fonts-dejavu-extra  libx11-dev libxi-dev libxext-dev libglx-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev tree
+
+      - name: Install NodeJS dependencies
+        run: |
+            npm i
+            FFMPEG_PATH=$(echo "const ffmpeg = require('ffmpeg-static');console.log(ffmpeg.split('/').slice(0, -1).join('/'));" | node -)
+            echo "Located FFMPEG at $FFMPEG_PATH"
+            export PATH="$FFMPEG_PATH:$PATH"
+
+      - name: Install python dependencies
+        run: |
+            pip install -r requirements.txt
+
+      - name: Install playwright dependencies
+        run: |
+            # System deps, mostly for video recording
+            # Playwright stuff
+            npx playwright install-deps chromium
+      # END Dependencies
+
+      - name: Test OpenGL
+        run: |
+            # Generate final.mp4
+            xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" $(npm bin)/editly test.json
