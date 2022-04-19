@@ -15,7 +15,7 @@
       "layers": [
         {
           "type": "video",
-          "path": "output/video-0.mp4",
+          "path": "test/video-0.mp4",
           "resizeMode": "contain",
           "zoomDirection": null,
           "mixVolume": 1
@@ -26,7 +26,7 @@
       "layers": [
         {
           "type": "video",
-          "path": "output/video-1.mp4",
+          "path": "test/video-1.mp4",
           "resizeMode": "contain",
           "zoomDirection": null,
           "mixVolume": 1
