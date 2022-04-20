@@ -38,7 +38,8 @@ def split_sentence(sentence, timing)
   split_sentence = sentence.split(' ')
   spaces = sentence.count(" ")
 
-  parts = 1 + (spaces / 12)
+  # Assumes roughly uniform word length.
+  parts = 1 + (spaces / 16)
   part_off = spaces / parts
 
   o = 0
