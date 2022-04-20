@@ -362,9 +362,9 @@ def recordTerm(idx, group):
     subprocess.check_call([
         'docker', 'run', '--rm', '-v', f'{fn()}:/data',
         'beer5215/asciicast2mp4',
-        '-S', '4', # 4x pixel density
-        '-w', '64', # 64 characters wide
-        '-h', '16', # 16 high
+        '-S', '2', # 2x pixel density
+        '-w', '131', # 128 characters wide
+        '-h', '33', # 32 high
         '-t', 'solarized-light', # Literally the only working theme.
         f"scene-{idx}.cast" # Not an fn() since it's internal to the container
     ])

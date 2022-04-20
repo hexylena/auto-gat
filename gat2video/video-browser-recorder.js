@@ -133,7 +133,7 @@ function logtime(now, start, msg){
 		}
 	}
 	// Sleep an extra 1.5s at the end.
-	await page.waitForTimeout(3000);
+	await page.waitForTimeout(5000);
 	await browser.close();
 	process.stdout.write(JSON.stringify(syncReport));
 

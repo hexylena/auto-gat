@@ -153,7 +153,7 @@ jobs:
       - name: Record & Upload
         shell: 'script --return --quiet --command "bash {0}"'
         run: |
-          stty cols 64 rows 16
+          stty cols 131 rows 33
           cd "$GITHUB_WORKSPACE"
           python gat2video/video-builder.py cvmfs.script cvmfs
 
@@ -185,8 +185,22 @@ jobs:
             # Then quantize that to remove long pauses
             ./asciinema-edit quantize --range 5 scene-final.cast > scene-final-quant.cast
 
-            # And upload!
-            asciinema upload scene-final-quant.cast
+      # And upload!
+      - uses: nick-fields/retry@v2
+        continue-on-error: true
+        with:
+          timeout_seconds: 20
+          max_attempts: 3
+          retry_on: error
+          command: asciinema upload scene-final-quant.cast
+
+      - name: Archive asciinema recordings
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: asciinema
+          path: |
+            *.cast
 
       - name: Backup our files
         if: always()
