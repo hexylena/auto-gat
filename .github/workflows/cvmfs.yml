@@ -167,7 +167,8 @@ jobs:
       - name: Generate final video
         run: |
             # Generate final.mp4
-            xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" $(npm bin)/editly editly.json
+            python ../gat2video/list-videos.py > videos.txt
+            ffmpeg -f concat -safe 1 -i videos.txt -c copy final.mp4
             # Generates a final.srt
             python gat2video/offset-subs.py
             # Resync just in case.
