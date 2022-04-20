@@ -130,7 +130,8 @@ function logtime(now, start, msg){
 		}
 
 		if(step.sleep){
-			await page.waitForTimeout(step.sleep * videoSpeed);
+			// Sleep an extra couple seconds than requested, just to give the audio a bit more breathing room.
+			await page.waitForTimeout((step.sleep + 2) * videoSpeed);
 		}
 	}
 	// Sleep an extra 1.5s at the end.
