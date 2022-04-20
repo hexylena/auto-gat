@@ -228,11 +228,16 @@ def recordBrowser(idx):
         fn(f"scene-{idx}.json"),
         "--mp4",
         silent_video,
+        "--log",
+        fn(f"scene-{idx}.log"),
     ]
     print(" ".join(cmd))
     my_env = os.environ.copy()
     my_env['DEBUG'] = 'pw:api'
-    resulting_script = json.loads(subprocess.check_output(cmd, env=my_env).decode("utf-8"))
+    subprocess.check_call(cmd, env=my_env)
+
+    with open(fn(f"scene-{idx}.log"), 'r') as handle:
+        resulting_script = json.load(handle)
 
     # Get the amount of time before the first scrollTo
     adelay = resulting_script[0]["time"]

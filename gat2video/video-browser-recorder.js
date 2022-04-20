@@ -13,6 +13,7 @@ program
 program
   .argument('<jsonpath>', 'Path to the JSON script')
   .option('--fast')
+  .option('--log <output-log-path>')
   .option('--mp4 <output-mp4-path>');
 
 program.parse(process.argv);
@@ -135,7 +136,8 @@ function logtime(now, start, msg){
 	// Sleep an extra 1.5s at the end.
 	await page.waitForTimeout(5000);
 	await browser.close();
-	process.stdout.write(JSON.stringify(syncReport));
+
+	fs.writeFile(options.log, JSON.stringify(syncReport))
 
 	// Make sure to await close, so that videos are saved.
 	await context.close();
