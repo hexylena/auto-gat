@@ -409,24 +409,24 @@ editly = {
 for idx, group in enumerate(runningGroup(steps)):
     typ = group[0]["data"]["visual"]
     print(f"typ={typ} len={len(group)} idx={idx} group={group}")
-    # if typ == "gtn":
-        # recordGtn(idx, group)
-    # elif typ == "terminal":
-        # recordTerm(idx, group)
-    # elif typ == "galaxy":
-        # recordGxy(idx, group)
+    if typ == "gtn":
+        recordGtn(idx, group)
+    elif typ == "terminal":
+        recordTerm(idx, group)
+    elif typ == "galaxy":
+        recordGxy(idx, group)
 
-    # editly['clips'].append({
-        # "layers": [
-            # {
-                # "type": "video",
-                # "path": fn(f"video-{idx}.mp4"),
-                # "resizeMode": "contain",
-                # "zoomDirection": None,
-                # "mixVolume": 1,
-            # },
-        # ]
-    # })
+    editly['clips'].append({
+        "layers": [
+            {
+                "type": "video",
+                "path": fn(f"video-{idx}.mp4"),
+                "resizeMode": "contain",
+                "zoomDirection": None,
+                "mixVolume": 1,
+            },
+        ]
+    })
 
-# with open(fn('editly.json'), 'w') as handle:
-    # handle.write(json.dumps(editly, indent=2))
+with open(fn('editly.json'), 'w') as handle:
+    handle.write(json.dumps(editly, indent=2))
