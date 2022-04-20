@@ -27,7 +27,6 @@ def dataKv(line):
         yield (m[0][5:], text)
 
 def fixspoken(kids):
-    print(kids)
     text = ""
     for y in kids:
         if y['element'] != 'paragraph':
@@ -55,12 +54,14 @@ def fixcommit(a, b):
 
     meta = {'type': 'code', 'code': code}
     meta.update({'data': dict(dataKv(b))})
+    meta['data']['visual'] = 'terminal'
     return meta
 
 def fixcmd(a, b):
     code = a['children'][0]['children']
     meta = {'type': 'cmd', 'cmd': code.strip()}
     meta.update({'data': dict(dataKv(b))})
+    meta['data']['visual'] = 'terminal'
     return meta
 
 def emit(d, i=0):
@@ -105,10 +106,38 @@ def emit(d, i=0):
             yield from emit(child, i=i+1)
 
 
+def mergeRefSteps(it):
+    # This is fundamentally a sort/collapse problem
+    steps = list(it)
+    non_text_steps = {
+        x['data']['ref']: x
+        for x in steps
+        if 'text' not in x
+    }
+    text_steps = [
+        x for x in steps
+        if 'text' in x
+    ]
+    for step in text_steps:
+        ref = step.get('data', {}).get('ref', None)
+        if ref:
+            refstep = non_text_steps[ref]
+            newstep = {}
+            newstep.update(step)
+            newstep.update(refstep) # This clobbers some entries like [data, type].
+            newstep['type'] = (step['type'], refstep['type'])
+            # But it's fine data is clobbered, they should be roughly identical except for data.commit.
+            del newstep['data']['ref']
+
+            yield newstep
+        else:
+            yield step
+
 def reduceSteps(it):
     seen = []
     out = []
     for step in it:
+        # print(step)
         if 'ref' in step['data']:
             ref = step['data']['ref']
             if ref not in seen:
@@ -144,10 +173,7 @@ def process(text: list):
 
     output = {'meta': {k: v for k, v in meta.items() if k in ('title', 'contributors', 'voice')}}
     output['steps'] = []
-    for x in reduceSteps(emit(data)):
-        # print(x)
-        if 'commit' in x['data'] or x['type'] == 'cmd' or 'cmd' in x['type']:
-            x['data']['visual'] = 'terminal'
+    for x in mergeRefSteps(emit(data)):
         output['steps'].append(x)
 
     return output

@@ -7,6 +7,7 @@ import shutil
 import json
 import sys
 import platform
+from gat2video import *
 
 G2V_HOME = os.path.dirname(os.path.realpath(__file__))
 G2V_CWD = os.getcwd()
@@ -99,24 +100,11 @@ def loadGitGatCommits(tutorial=f"admin/{TUTORIAL_ID}"):
         commitMap[g[1]] = g[0]
     return commitMap
 
-commitMap = loadGitGatCommits()
+try:
+    commitMap = loadGitGatCommits()
+except:
+    pass
 
-def runningGroup(steps):
-    c = None
-    for step in steps:
-        if c is None:
-            c = [step]
-            continue
-
-        # If the new visual is different, then
-        if step["data"]["visual"] != c[-1]["data"]["visual"]:
-            # Yield the current list
-            yield c
-            # And reset it with current step
-            c = [step]
-        else:
-            c.append(step)
-    yield c
 
 
 def calculateSyncing(syncpoints, audio):
@@ -409,24 +397,24 @@ editly = {
 for idx, group in enumerate(runningGroup(steps)):
     typ = group[0]["data"]["visual"]
     print(f"typ={typ} len={len(group)} idx={idx} group={group}")
-    if typ == "gtn":
-        recordGtn(idx, group)
-    elif typ == "terminal":
-        recordTerm(idx, group)
-    elif typ == "galaxy":
-        recordGxy(idx, group)
+    # if typ == "gtn":
+        # recordGtn(idx, group)
+    # elif typ == "terminal":
+        # recordTerm(idx, group)
+    # elif typ == "galaxy":
+        # recordGxy(idx, group)
 
-    editly['clips'].append({
-        "layers": [
-            {
-                "type": "video",
-                "path": fn(f"video-{idx}.mp4"),
-                "resizeMode": "contain",
-                "zoomDirection": None,
-                "mixVolume": 1,
-            },
-        ]
-    })
+    # editly['clips'].append({
+        # "layers": [
+            # {
+                # "type": "video",
+                # "path": fn(f"video-{idx}.mp4"),
+                # "resizeMode": "contain",
+                # "zoomDirection": None,
+                # "mixVolume": 1,
+            # },
+        # ]
+    # })
 
-with open(fn('editly.json'), 'w') as handle:
-    handle.write(json.dumps(editly, indent=2))
+# with open(fn('editly.json'), 'w') as handle:
+    # handle.write(json.dumps(editly, indent=2))
