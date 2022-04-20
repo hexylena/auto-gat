@@ -203,7 +203,14 @@ def muxAudioVideo(group, videoin, videoout, syncpoints):
     final_concat = f"{concat_filter}concat=n={len(group)}:v=0:a=1[a]"
     complex_filter.append(final_concat)
     final_complex = ";".join(complex_filter)
-    mux_cmd.extend([final_complex, "-map", "0:v", "-map", "[a]", videoout])
+    mux_cmd.extend([
+        final_complex,
+        "-map", "0:v",
+        "-map", "[a]",
+        "-vf",
+        "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:-1:-1:color=black,format=yuv420p",
+        videoout
+    ])
     print(" ".join(mux_cmd))
     subprocess.check_call(mux_cmd)
 
