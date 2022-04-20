@@ -167,7 +167,7 @@ jobs:
       - name: Generate final video
         run: |
             # Generate final.mp4
-            python ../gat2video/list-videos.py > videos.txt
+            python gat2video/list-videos.py > videos.txt
             ffmpeg -f concat -safe 1 -i videos.txt -c copy final.mp4
             # Generates a final.srt
             python gat2video/offset-subs.py
