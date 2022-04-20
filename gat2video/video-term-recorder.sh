@@ -82,4 +82,5 @@ for line in $(cat $SCRIPT | jq '.[]' -c); do
 		sleep "$toWait"
 	fi
 done
+sleep 5
 IFS="$OLDIFS"
