@@ -138,7 +138,7 @@ function logtime(now, start, msg){
 	await page.waitForTimeout(5000);
 	await browser.close();
 
-	fs.writeFile(options.log, JSON.stringify(syncReport))
+	fs.writeFile(options.log, JSON.stringify(syncReport), 'utf8', () => {})
 
 	// Make sure to await close, so that videos are saved.
 	await context.close();
