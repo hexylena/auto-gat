@@ -14,6 +14,8 @@ program
   .argument('<jsonpath>', 'Path to the JSON script')
   .option('--fast')
   .option('--log <output-log-path>')
+  .option('--cookiejar <cookie-jar-path>')
+  .option('--sessionstate <session-state-path>')
   .option('--mp4 <output-mp4-path>');
 
 program.parse(process.argv);
@@ -50,7 +52,28 @@ function logtime(now, start, msg){
 			size: { width: 1920, height: 1080 },
 		}
 	}
+	if(options.cookiejar){
+		contextOptions['storageState'] = options.cookiejar
+	}
+
 	const context = await browser.newContext(contextOptions);
+
+
+	if(options.cookiejar){
+		const cookies = JSON.parse(fs.readFileSync(options.cookiejar).toString("utf-8"))
+		await context.addCookies(cookies.cookies);
+	}
+	if(options.sessionstate){
+		const sessionStorage = fs.readFileSync(options.sessionstate).toString("utf-8")
+		context.addInitScript(storage => {
+		  if (true) {
+			const entries = JSON.parse(storage);
+			for (const [key, value] of Object.entries(entries)) {
+			  window.sessionStorage.setItem(key, value);
+			}
+		  }
+		}, sessionStorage);
+	}
 
 	const page = await context.newPage();
 	await page.setViewportSize({
