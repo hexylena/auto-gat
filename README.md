@@ -121,7 +121,7 @@ And this again is recorded as a "script", similar to the above JSON log from the
 
 ### Final Composition
 
-(todo) all of the associated scenes are merged into a final video using [`editly`](https://github.com/mifi/editly)
+All of the associated scenes are merged into a final video using ffmpeg, and this is then uploaded to s3 (later youtube.)
 
 ## Cover
 
