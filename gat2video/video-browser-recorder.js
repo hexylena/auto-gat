@@ -302,17 +302,20 @@ function logtime(now, start, msg){
 			await page.waitForTimeout((step.sleep + 2) * videoSpeed);
 		}
 	}
-	// Sleep an extra 1.5s at the end.
-	await page.waitForTimeout(5000);
+	// Sleep an extra 5s at the end.
+	await page.waitForTimeout(5 * videoSpeed);
 	await browser.close();
 
-	fs.writeFile(options.log, JSON.stringify(syncReport), 'utf8', () => {})
+	if(options.log){
+		fs.writeFile(options.log, JSON.stringify(syncReport), 'utf8', () => {})
+	}
 
 	// Make sure to await close, so that videos are saved.
 	await context.close();
 
 	if(options.mp4){
 		const path = await page.video().path();
+		//cnosole.log(path, options.mp4)
 		fs.rename(path, options.mp4, () => {});
 	}
 
