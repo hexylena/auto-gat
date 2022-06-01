@@ -25,7 +25,114 @@ fs.readFile(program.args[0], 'utf8', (err, data) => {
 	actions = JSON.parse(data);
 });
 
+function easeInOut(x) {
+	return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
+}
+
+async function tweenMouse(page, origPos, newTarget){
+	let [x2, y2] = newTarget,
+		y0 = origPos[1],
+		x0 = origPos[0];
+
+	const totalTimeMs = 800;
+	const tweenSteps = 50;
+	for(var i = 0; i < tweenSteps; i++){
+		let x1 = parseInt(x0 + (x2 - x0) * easeInOut(i / tweenSteps)),
+			y1 = parseInt(y0 + (y2 - y0) * easeInOut(i / tweenSteps));
+		await page.mouse.move(x1, y1);
+		await page.waitForTimeout(totalTimeMs / tweenSteps);
+	}
+}
+
+
+// https://github.com/hdorgeval/playwright-fluent/blob/master/src/actions/dom-actions/show-mouse-position/show-mouse-position.ts
+//
+async function showMousePosition(page) {
+  if (!page) {
+    throw new Error('Cannot show mouse position because no browser has been launched');
+  }
+  // code from https://gist.github.com/aslushnikov/94108a4094532c7752135c42e12a00eb
+  await page.addInitScript(() => {
+    // Install mouse helper only for top-level frame.
+    if (window !== window.parent) return;
+    window.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        const box = document.createElement('playwright-mouse-pointer');
+        const styleElement = document.createElement('style');
+        styleElement.innerHTML = `
+        playwright-mouse-pointer {
+          pointer-events: none;
+          position: absolute;
+          top: 0;
+          z-index: 10000;
+          left: 0;
+          width: 20px;
+          height: 20px;
+          background: rgba(0,0,0,.4);
+          border: 1px solid white;
+          border-radius: 10px;
+          margin: -10px 0 0 -10px;
+          padding: 0;
+          transition: background .2s, border-radius .2s, border-color .2s;
+        }
+        playwright-mouse-pointer.button-1 {
+          transition: none;
+          background: rgba(0,0,0,0.9);
+        }
+        playwright-mouse-pointer.button-2 {
+          transition: none;
+          border-color: rgba(0,0,255,0.9);
+        }
+        playwright-mouse-pointer.button-3 {
+          transition: none;
+          border-radius: 4px;
+        }
+        playwright-mouse-pointer.button-4 {
+          transition: none;
+          border-color: rgba(255,0,0,0.9);
+        }
+        playwright-mouse-pointer.button-5 {
+          transition: none;
+          border-color: rgba(0,255,0,0.9);
+        }
+      `;
+        document.head.appendChild(styleElement);
+        document.body.appendChild(box);
+        document.addEventListener(
+          'mousemove',
+          (event) => {
+            box.style.left = event.pageX + 'px';
+            box.style.top = event.pageY + 'px';
+          },
+          true,
+        );
+        document.addEventListener(
+          'mousedown',
+          (event) => {
+            box.classList.add('button-' + event.which);
+          },
+          true,
+        );
+        document.addEventListener(
+          'mouseup',
+          (event) => {
+            box.classList.remove('button-' + event.which);
+          },
+          true,
+        );
+      },
+      false,
+    );
+  });
+}
+
+
+
+
+
 var videoSpeed = 1000;
+var lastMousePos;
 if(options.fast){
 	videoSpeed = 10;
 }
@@ -81,6 +188,14 @@ function logtime(now, start, msg){
 		height: 1080,
 	});
 
+	// Setup the mouseHandler
+	await showMousePosition(page);
+	// Save that.
+	lastMousePos = [
+		400,
+		400,
+	];
+
 	for(var i = 0; i < actions.length; i++){
 		var step = actions[i];
 		//console.log(step);
@@ -96,6 +211,13 @@ function logtime(now, start, msg){
 			}
 			now = new Date();
 			logtime(now, start, 'gone')
+
+			await page.evaluate(() => {
+				lastMousePos = [
+					document.documentElement.clientWidth / 2,
+					document.documentElement.clientHeight / 2,
+				];
+			})
 		} else if (step.action == 'scrollTo'){
 			await page.evaluate((step) => document.getElementById(step.target.slice(1)).scrollIntoView({behavior: "smooth"}), step).catch((err) => console.log(err));
 			now = new Date();
@@ -108,12 +230,35 @@ function logtime(now, start, msg){
 			now = new Date();
 			logtime(now, start, 'filled')
 		} else if (step.action == 'click'){
+			var newMousePos = await page.evaluate((target) => {
+				console.log(target)
+				e2 = document.querySelector(target)
+				p2 = e2.getBoundingClientRect()
+				console.log(e2)
+				y2 = p2.top + (p2.height / 2)
+				x2 = p2.left + (p2.width / 2)
+				return [x2, y2, target]
+			}, step.target);
+			console.log(lastMousePos, newMousePos)
+
+			await tweenMouse(page, lastMousePos, newMousePos);
+			lastMousePos = newMousePos;
+
+
 			//await page.locator(step.target).first().click();
 			//await page.click(step.target)
+			//
+			await page.evaluate(() => {
+				document.getElementsByTagName("playwright-mouse-pointer")[0].classList.add('button-1');
+			})
+			await page.waitForTimeout(0.5 * videoSpeed);
+
 			await page.evaluate((step) => {
 				document.querySelector(step.target).click();
 			}, step);
 
+			await page.waitForLoadState('domcontentloaded');
+			await page.mouse.move(...lastMousePos);
 			await page.evaluate(() => {
 				document.body.style.zoom=1.4;
 			});
