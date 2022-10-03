@@ -47,18 +47,30 @@ async function tweenMouse(page, origPos, newTarget){
 
 // https://github.com/hdorgeval/playwright-fluent/blob/master/src/actions/dom-actions/show-mouse-position/show-mouse-position.ts
 //
-async function showMousePosition(page) {
+function showMousePosition(page) {
   if (!page) {
     throw new Error('Cannot show mouse position because no browser has been launched');
   }
   // code from https://gist.github.com/aslushnikov/94108a4094532c7752135c42e12a00eb
-  await page.addInitScript(() => {
+	console.log("Adding Mouse Support")
+  page.evaluate(() => {
     // Install mouse helper only for top-level frame.
-    if (window !== window.parent) return;
-    window.addEventListener(
-      'DOMContentLoaded',
-      () => {
+	  //
+	// Ignore IFrames.
+	if (window !== window.parent) {
+		return;
+	}
+
+	console.log(`Window = ${window}, window.parent=${window.parent}, ${window === window.parent}`)
+	console.log("Adding Mouse Support")
+		// Don't add a duplicate button.
+		if(document.getElementsByTagName("playwright-mouse-pointer").length !== 0) {
+			return
+		}
+
         const box = document.createElement('playwright-mouse-pointer');
+
+		console.log(`What's in the box? ${box}`)
         const styleElement = document.createElement('style');
         styleElement.innerHTML = `
         playwright-mouse-pointer {
@@ -78,7 +90,7 @@ async function showMousePosition(page) {
         }
         playwright-mouse-pointer.button-1 {
           transition: none;
-          background: rgba(0,0,0,0.9);
+          background: rgba(255,0,0,0.9);
         }
         playwright-mouse-pointer.button-2 {
           transition: none;
@@ -97,8 +109,10 @@ async function showMousePosition(page) {
           border-color: rgba(0,255,0,0.9);
         }
       `;
-        document.head.appendChild(styleElement);
+        document.body.appendChild(styleElement);
         document.body.appendChild(box);
+		document.playwrightMouseButton = box;
+		console.log(`What's in the box? ${document.playwrightMouseButton}`)
         document.addEventListener(
           'mousemove',
           (event) => {
@@ -124,7 +138,6 @@ async function showMousePosition(page) {
       },
       false,
     );
-  });
 }
 
 
@@ -188,15 +201,24 @@ function logtime(now, start, msg){
 		height: 1080,
 	});
 
+	page.on("console", msg => console.log("PAGE LOG:", msg));
+
 	// Setup the mouseHandler
 	await showMousePosition(page);
+	await page.evaluate(() => {
+		console.log("Playawright mouse pointer:" ,document.getElementById("playwright-mouse-pointer"))
+	});
 	// Save that.
 	lastMousePos = [
 		400,
 		400,
 	];
 
+
 	for(var i = 0; i < actions.length; i++){
+		console.log(`ACTION ${JSON.stringify(actions[i])} ACTION`)
+		await showMousePosition(page);
+
 		var step = actions[i];
 		//console.log(step);
 		if(step.action == 'goto'){
@@ -204,6 +226,7 @@ function logtime(now, start, msg){
 			await page.evaluate(() => {
 				document.body.style.zoom=1.4;
 			});
+			await showMousePosition(page);
 			await page.waitForLoadState('networkidle');
 			if(step.value !== undefined){
 				//console.log('text=' + step.value)
@@ -230,6 +253,7 @@ function logtime(now, start, msg){
 			now = new Date();
 			logtime(now, start, 'filled')
 		} else if (step.action == 'click'){
+			console.log(`Clicking ${step.target}`)
 			var newMousePos = await page.evaluate((target) => {
 				console.log(target)
 				e2 = document.querySelector(target)
@@ -249,9 +273,16 @@ function logtime(now, start, msg){
 			//await page.click(step.target)
 			//
 			await page.evaluate(() => {
-				document.getElementsByTagName("playwright-mouse-pointer")[0].classList.add('button-1');
+				var e = document.getElementsByTagName("playwright-mouse-pointer")
+				console.log(`Checking mouse button: ${e} ${e.length}`)
+				console.log(`What's in the box? ${document.playwrightMouseButton}`)
+				console.log(`Checking mouse button: ${e} ${e.length} ${e[0]}`)
+				document.playwrightMouseButton.classList.add('button-1');
 			})
 			await page.waitForTimeout(0.5 * videoSpeed);
+			await page.evaluate(() => {
+				document.playwrightMouseButton.classList.remove('button-1');
+			})
 
 			await page.evaluate((step) => {
 				document.querySelector(step.target).click();
@@ -262,6 +293,7 @@ function logtime(now, start, msg){
 			await page.evaluate(() => {
 				document.body.style.zoom=1.4;
 			});
+			await showMousePosition(page);
 			now = new Date();
 			logtime(now, start, 'clicked')
 		} else if (step.action == 'loadTool'){
@@ -271,6 +303,7 @@ function logtime(now, start, msg){
 			await page.evaluate(() => {
 				document.body.style.zoom=1.4;
 			});
+			await showMousePosition(page);
 
 			if(step.value !== undefined){
 				await page.locator(step.value).waitFor();
@@ -285,6 +318,7 @@ function logtime(now, start, msg){
 			await page.evaluate(() => {
 				document.body.style.zoom=1.4;
 			});
+			await showMousePosition(page);
 
 			now = new Date();
 			logtime(now, start, 'custom')
